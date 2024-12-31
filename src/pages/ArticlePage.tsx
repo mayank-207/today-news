@@ -1,10 +1,8 @@
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Bookmark, Share2, ThumbsUp } from 'lucide-react';
 import { Header } from '../components/Header';
 import { TrendingArticles } from '../components/trending/TrendingArticles';
 import { mockArticles } from '../data/mockData';
-import type { Article } from '../types';
 
 export function ArticlePage() {
   const { id } = useParams();

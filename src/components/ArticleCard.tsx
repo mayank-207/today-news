@@ -1,4 +1,3 @@
-import React from 'react';
 import { Clock, User, ArrowRight } from 'lucide-react';
 import type { Article } from '../types';
 

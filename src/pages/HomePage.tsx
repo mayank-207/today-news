@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
-import { Header } from '../components/Header';
-import { MobileHeader } from '../components/layout/MobileHeader';
-import { Sidebar } from '../components/layout/Sidebar';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Header } from '../components/layout/Header';
 import { HeroSlider } from '../components/home/HeroSlider';
 import { ArticleCard } from '../components/ArticleCard';
 import { CategoryFilter } from '../components/CategoryFilter';
 import { TrendingArticles } from '../components/trending/TrendingArticles';
 import { NewsletterSection } from '../components/home/NewsletterSection';
 import { PopularTopics } from '../components/home/PopularTopics';
-import { useNavigate } from 'react-router-dom';
-import { mockArticles, mockCategories } from '../data/mockData';
 import { useDarkMode } from '../hooks/useDarkMode';
+import { mockArticles, mockCategories } from '../data/mockData';
 import type { Article } from '../types';
 
 export function HomePage() {
   const [isDark, toggleDark] = useDarkMode();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -32,34 +29,27 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col min-h-screen">
-        <MobileHeader 
-          isDark={isDark}
-          toggleDark={toggleDark}
-          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        />
-        <Header />
-        
-        <div className="flex flex-1">
-          <Sidebar 
-            isOpen={isSidebarOpen} 
-            onClose={() => setIsSidebarOpen(false)} 
-          />
-          
-          <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Header isDark={isDark} toggleDark={toggleDark} />
+      
+      <main className="pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Main content area */}
+          <div className="space-y-8">
+            <HeroSlider articles={featuredArticles} />
+            <NewsletterSection />
+            <PopularTopics categories={mockCategories} />
+            
+            {/* Desktop layout */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
-              <div>
-                <HeroSlider articles={featuredArticles} />
-                <NewsletterSection />
-                <PopularTopics categories={mockCategories} />
-                
+              {/* Main articles section */}
+              <div className="space-y-8">
                 <CategoryFilter
                   categories={mockCategories}
                   selectedCategory={selectedCategory}
                   onSelectCategory={setSelectedCategory}
                 />
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredArticles.map(article => (
                     <ArticleCard 
                       key={article.id} 
@@ -70,13 +60,19 @@ export function HomePage() {
                 </div>
               </div>
               
-              <aside className="space-y-8 lg:block">
+              {/* Trending articles - Only visible on desktop */}
+              <aside className="hidden lg:block space-y-6">
                 <TrendingArticles articles={mockArticles} />
               </aside>
             </div>
-          </main>
+
+            {/* Mobile/Tablet Trending Articles - Only visible below lg breakpoint */}
+            <div className="lg:hidden">
+              <TrendingArticles articles={mockArticles} />
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
